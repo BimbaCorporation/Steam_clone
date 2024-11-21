@@ -6,7 +6,7 @@ import '../styles/menu.css';
 const Menu = () => {
   return (
     <div className="menu">
-      <h1>CheapShark</h1>
+      <h1>BimbaGames</h1>
       <nav>
         <Link to="/"><button>Home</button></Link>
         <Link to="/browse"><button>Browse</button></Link>
