@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getGames } from '../HttpClient/HttpClient'; // Імпортуємо клієнт
+import { searchGamesByTitle } from '../HttpClient/HttpClient';
 
 const Search = () => {
   const [query, setQuery] = useState('');
@@ -8,15 +8,17 @@ const Search = () => {
   const [error, setError] = useState(null);
 
   const handleSearch = async () => {
-    if (!query) return;
+    if (!query.trim()) return;
 
     setLoading(true);
+    setError(null);
+
     try {
-      const games = await getGames([query]); // Викликаємо API для пошуку
+      const games = await searchGamesByTitle(query);
       setResults(games);
-      setLoading(false);
     } catch (err) {
       setError("Не вдалося знайти ігри");
+    } finally {
       setLoading(false);
     }
   };
@@ -28,7 +30,7 @@ const Search = () => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Введіть гру"
+        placeholder="Введіть назву гри"
       />
       <button onClick={handleSearch}>Шукати</button>
 
@@ -37,8 +39,8 @@ const Search = () => {
 
       <ul>
         {results.map((game) => (
-          <li key={game.title}>
-            <strong>{game.title}</strong> - {game.salePrice} <br />
+          <li key={game.dealID}>
+            <strong>{game.title}</strong> - ${game.price} (знижка: {Math.round(game.savings)}%) <br />
             <img src={game.thumb} alt={game.title} />
           </li>
         ))}

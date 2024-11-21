@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 // Імпорт компонентів
-import Menu from '../components/Menu';
-import Home from '../components/Home';
-import Browse from '../components/Browse';
-import Search from '../components/Search';
-import About from '../components/About';
+import Menu from '../features/Menu';
+import Home from '../features/Home';
+import Browse from '../features/Browse';
+import Search from '../features/Search';
+import About from '../features/About';
 
 
 const BasicRoute = () => {
