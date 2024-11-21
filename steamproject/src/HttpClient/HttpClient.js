@@ -44,3 +44,15 @@ export const getStores = async () => {
     throw error;
   }
 };
+export const searchGamesByTitle = async (title) => {
+  try {
+    const response = await apiClient.get('/deals', {
+      params: { title }, // Параметр для пошуку за назвою
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching games by title: ", error);
+    throw error;
+  }
+};
+
