@@ -5,7 +5,7 @@ const NotFound = () => {
         <div>
           <h1>Помилка</h1>
           <nav>
-            <Link to="/Item">
+            <Link to="/">
               <button>Назад</button>
             </Link>
           </nav>
