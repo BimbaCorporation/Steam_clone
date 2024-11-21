@@ -30,8 +30,12 @@ const Home = () => {
       <ul>
         {stores.map(store => (
           <li key={store.storeID}>
-            <strong>{store.storeName}</strong> - {store.storeURL} <br />
-            <img src={store.images.banner} alt={store.storeName} width="200" />
+            <strong>{store.storeName}</strong> - <a href={store.storeURL}>Перейти</a> <br />
+            <img
+              src={`https://www.cheapshark.com${store.images.banner}`} // Додаємо домен перед шляхом
+              alt={store.storeName}
+              width="200"
+            />
           </li>
         ))}
       </ul>
