@@ -55,3 +55,4 @@ export const searchGamesByTitle = async (title) => {
     throw error;
   }
 };
+

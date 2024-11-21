@@ -1,25 +1,51 @@
-/* menu.css */
 .menu {
-    background-color: #2c3e50;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .menu h1 {
-    color: white;
-  }
-  
-  .menu nav button {
-    background-color: #34495e;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .menu nav button:hover {
-    background-color: #16a085;
-  }
-  
+  background-color: #2c3e50;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Кнопки переносяться на наступний рядок за потреби */
+}
+
+.menu-logo {
+  height: 108px; /* Висота вашого логотипу (зображення) */
+  width: auto;  /* Ширина автоматична, щоб зберегти пропорції */
+  flex-shrink: 0; /* Логотип не стискається */
+  position: absolute;
+}
+
+.menu nav {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap; /* Перенесення кнопок на новий рядок */
+  justify-content: flex-end; /* Вирівнювання кнопок праворуч */
+  flex-grow: 1;
+  margin-right: 2%; /* Відступ від кінця екрану (5%) */
+}
+
+.menu nav button {
+  background-color: #34495e;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.menu nav button:hover {
+  background-color: #16a085;
+}
+
+#root {
+  margin-top: 60px; /* Висота навбару */
+  padding: 2rem;
+  text-align: center;
+}
