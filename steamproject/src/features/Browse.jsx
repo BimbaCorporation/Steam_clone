@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getDeals } from "../HttpClient/HttpClient"; // Використовуємо нову версію getDeals без пагінації
+import { getDeals } from "../HttpClient/HttpClient";
 import "../styles/Browse.css";
 
 const Browse = () => {
@@ -9,56 +9,51 @@ const Browse = () => {
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [filters, setFilters] = useState({
+    AAA: 0,
+    steamworks: 0,
+    onSale: 0,
     title: "",
     priceRange: [0, 50],
-    AAAOnly: false,
-    steamworksOnly: false,
-    onSale: false,
     hideDuplicates: false,
-    minSteamRating: 0,
+    steamRating: 70,
   });
 
   useEffect(() => {
-  const fetchDeals = async () => {
-    try {
-      const data = await getDeals(filters);
-      setDeals(data);
-    } catch (error) {
-      console.error("Error fetching deals: ", error);
-    }
-  };
+    const fetchDeals = async () => {
+      setLoading(true);
+      setError(null);
 
-  fetchDeals();
-}, [filters]);
+      try {
+        // Формуємо фільтри для API
+        const apiFilters = {
+          AAA: filters.AAA,
+          steamworks: filters.steamworks,
+          onSale: filters.onSale,
+          steamRating: filters.steamRating,
+          upperPrice: filters.priceRange[1],
+          lowerPrice: filters.priceRange[0],
+        };
 
+        const data = await getDeals(apiFilters);
+        setDeals(data);
+        setLoading(false);
+      } catch (error) {
+        setError("Не вдалося завантажити пропозиції.");
+        setLoading(false);
+      }
+    };
+
+    fetchDeals();
+  }, [filters]);
 
   useEffect(() => {
-    let filtered = deals;
+    // Локальне фільтрування
+    let filtered = [...deals];
 
-    // Фільтри
     if (filters.title) {
       filtered = filtered.filter((deal) =>
         deal.title.toLowerCase().includes(filters.title.toLowerCase())
       );
-    }
-
-    if (filters.priceRange) {
-      const [min, max] = filters.priceRange;
-      filtered = filtered.filter(
-        (deal) => deal.salePrice >= min && deal.salePrice <= max
-      );
-    }
-
-    if (filters.AAAOnly) {
-      filtered = filtered.filter((deal) => deal.retailPrice >= 30); // AAA ігри умовно дорожчі
-    }
-
-    if (filters.steamworksOnly) {
-      filtered = filtered.filter((deal) => deal.steamworks); // Steamworks поле (true/false)
-    }
-
-    if (filters.onSale) {
-      filtered = filtered.filter((deal) => deal.savings > 0); // Знижка більша за 0
     }
 
     if (filters.hideDuplicates) {
@@ -70,30 +65,18 @@ const Browse = () => {
       });
     }
 
-    if (filters.minSteamRating > 0) {
-      filtered = filtered.filter(
-        (deal) =>
-          deal.steamRatingPercent &&
-          deal.steamRatingPercent >= filters.minSteamRating
-      );
-    }
-
     setFilteredDeals(filtered);
   }, [filters, deals]);
 
   const handleSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
+    const direction =
+      sortConfig.key === key && sortConfig.direction === "ascending"
+        ? "descending"
+        : "ascending";
 
     const sorted = [...filteredDeals].sort((a, b) => {
-      if (a[key] < b[key]) {
-        return direction === "ascending" ? -1 : 1;
-      }
-      if (a[key] > b[key]) {
-        return direction === "ascending" ? 1 : -1;
-      }
+      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
       return 0;
     });
 
@@ -101,8 +84,8 @@ const Browse = () => {
     setFilteredDeals(sorted);
   };
 
-  if (loading) return <div>Завантаження...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div className="loading">Завантаження...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="browse-container">
@@ -146,10 +129,8 @@ const Browse = () => {
           <label>
             <input
               type="checkbox"
-              checked={filters.AAAOnly}
-              onChange={(e) =>
-                setFilters({ ...filters, AAAOnly: e.target.checked })
-              }
+              checked={filters.AAA}
+              onChange={(e) => setFilters({ ...filters, AAA: e.target.checked ? 1 : 0 })}
             />
             AAA ігри
           </label>
@@ -158,9 +139,9 @@ const Browse = () => {
           <label>
             <input
               type="checkbox"
-              checked={filters.steamworksOnly}
+              checked={filters.steamworks}
               onChange={(e) =>
-                setFilters({ ...filters, steamworksOnly: e.target.checked })
+                setFilters({ ...filters, steamworks: e.target.checked ? 1 : 0 })
               }
             />
             Steamworks
@@ -172,7 +153,7 @@ const Browse = () => {
               type="checkbox"
               checked={filters.onSale}
               onChange={(e) =>
-                setFilters({ ...filters, onSale: e.target.checked })
+                setFilters({ ...filters, onSale: e.target.checked ? 1 : 0 })
               }
             />
             Знижка
@@ -196,15 +177,15 @@ const Browse = () => {
             type="range"
             min="0"
             max="100"
-            value={filters.minSteamRating}
+            value={filters.steamRating}
             onChange={(e) =>
               setFilters({
                 ...filters,
-                minSteamRating: Number(e.target.value),
+                steamRating: Number(e.target.value),
               })
             }
           />
-          <span>{filters.minSteamRating}%+</span>
+          <span>{filters.steamRating}%+</span>
         </div>
       </div>
 
@@ -233,11 +214,6 @@ const Browse = () => {
               {sortConfig.key === "steamRating" &&
                 (sortConfig.direction === "ascending" ? "▲" : "▼")}
             </th>
-            <th onClick={() => handleSort("releaseDate")}>
-              Дата релізу{" "}
-              {sortConfig.key === "releaseDate" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -252,33 +228,12 @@ const Browse = () => {
               </td>
               <td>{Math.round(deal.savings)}%</td>
               <td>
-                <span className="price">${deal.salePrice}</span>{" "}
-                <span className="retail-price">${deal.retailPrice}</span>
+                <span className="price">${deal.salePrice}</span>
               </td>
+              <td>{deal.title}</td>
               <td>
-                <div className="game-title">
-                  <img
-                    src={deal.thumb}
-                    alt={deal.title}
-                    className="game-thumbnail"
-                  />
-                  <a
-                    href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {deal.title}
-                  </a>
-                </div>
-              </td>
-              <td>
-                {deal.steamRatingText
-                  ? `${deal.steamRatingText} (${deal.steamRatingPercent}%)`
-                  : "N/A"}
-              </td>
-              <td>
-                {deal.releaseDate
-                  ? new Date(deal.releaseDate * 1000).toLocaleDateString()
+                {deal.steamRatingPercent
+                  ? `${deal.steamRatingPercent}%`
                   : "N/A"}
               </td>
             </tr>
@@ -290,5 +245,3 @@ const Browse = () => {
 };
 
 export default Browse;
-
-
