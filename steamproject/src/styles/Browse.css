@@ -1,0 +1,152 @@
+.browse-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .deals-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  
+  .deals-table th,
+  .deals-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+
+  }
+  
+  .deals-table th {
+    background-color: #2c3e50;
+    font-weight: bold;
+  }
+  
+
+  .deals-table tr:hover {
+    background-color: #5d85cf;
+  }
+  
+  .store-logo {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+  }
+  
+.game-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .game-thumbnail {
+    width: 50px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #28a745;
+  }
+  
+  .retail-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    margin-left: 5px;
+  }
+  .filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .filters input[type="text"],
+  .filters input[type="number"] {
+    padding: 5px;
+    font-size: 14px;
+    width: 150px;
+  }
+  
+  .filters label {
+    font-size: 14px;
+  }
+  
+  th {
+    cursor: pointer;
+  }
+  
+  th:hover {
+    background-color: #f0f0f0;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    background: rgb(0, 68, 255);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal h3 {
+    margin-top: 0;
+  }
+  
+  .modal ul {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .modal ul li {
+    margin-bottom: 10px;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .modal-actions button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .modal-actions button:hover {
+    background-color: #000000;
+  }
