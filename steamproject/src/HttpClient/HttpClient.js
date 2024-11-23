@@ -13,7 +13,7 @@ export const getDeals = async () => {
   try {
     const response = await apiClient.get('/deals', {
       params: {
-        // Без параметрів пагінації
+        
       },
     });
     return response.data;
