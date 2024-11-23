@@ -11,23 +11,26 @@ const Browse = () => {
   const [filters, setFilters] = useState({
     title: "",
     priceRange: [0, 50],
+    AAAOnly: false,
+    steamworksOnly: false,
+    onSale: false,
+    hideDuplicates: false,
+    minSteamRating: 0,
   });
 
   useEffect(() => {
-    const fetchDeals = async () => {
-      try {
-        const data = await getDeals(); // Отримуємо всі угоди
-        setDeals(data); // Зберігаємо угоди
-        setFilteredDeals(data); // Встановлюємо відфільтровані угоди
-        setLoading(false); // Завершення завантаження
-      } catch (err) {
-        setError("Не вдалося отримати угоди");
-        setLoading(false);
-      }
-    };
+  const fetchDeals = async () => {
+    try {
+      const data = await getDeals(filters);
+      setDeals(data);
+    } catch (error) {
+      console.error("Error fetching deals: ", error);
+    }
+  };
 
-    fetchDeals();
-  }, []); // Викликається лише один раз при монтуванні компонента
+  fetchDeals();
+}, [filters]);
+
 
   useEffect(() => {
     let filtered = deals;
@@ -43,6 +46,35 @@ const Browse = () => {
       const [min, max] = filters.priceRange;
       filtered = filtered.filter(
         (deal) => deal.salePrice >= min && deal.salePrice <= max
+      );
+    }
+
+    if (filters.AAAOnly) {
+      filtered = filtered.filter((deal) => deal.retailPrice >= 30); // AAA ігри умовно дорожчі
+    }
+
+    if (filters.steamworksOnly) {
+      filtered = filtered.filter((deal) => deal.steamworks); // Steamworks поле (true/false)
+    }
+
+    if (filters.onSale) {
+      filtered = filtered.filter((deal) => deal.savings > 0); // Знижка більша за 0
+    }
+
+    if (filters.hideDuplicates) {
+      const uniqueTitles = new Set();
+      filtered = filtered.filter((deal) => {
+        if (uniqueTitles.has(deal.title)) return false;
+        uniqueTitles.add(deal.title);
+        return true;
+      });
+    }
+
+    if (filters.minSteamRating > 0) {
+      filtered = filtered.filter(
+        (deal) =>
+          deal.steamRatingPercent &&
+          deal.steamRatingPercent >= filters.minSteamRating
       );
     }
 
@@ -109,6 +141,70 @@ const Browse = () => {
               })
             }
           />
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.AAAOnly}
+              onChange={(e) =>
+                setFilters({ ...filters, AAAOnly: e.target.checked })
+              }
+            />
+            AAA ігри
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.steamworksOnly}
+              onChange={(e) =>
+                setFilters({ ...filters, steamworksOnly: e.target.checked })
+              }
+            />
+            Steamworks
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.onSale}
+              onChange={(e) =>
+                setFilters({ ...filters, onSale: e.target.checked })
+              }
+            />
+            Знижка
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.hideDuplicates}
+              onChange={(e) =>
+                setFilters({ ...filters, hideDuplicates: e.target.checked })
+              }
+            />
+            Сховати дуплікати
+          </label>
+        </div>
+        <div>
+          <label>Steam Рейтинг:</label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={filters.minSteamRating}
+            onChange={(e) =>
+              setFilters({
+                ...filters,
+                minSteamRating: Number(e.target.value),
+              })
+            }
+          />
+          <span>{filters.minSteamRating}%+</span>
         </div>
       </div>
 
@@ -194,3 +290,5 @@ const Browse = () => {
 };
 
 export default Browse;
+
+

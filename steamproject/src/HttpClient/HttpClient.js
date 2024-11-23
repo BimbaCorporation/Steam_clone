@@ -8,12 +8,12 @@ const apiClient = axios.create({
   },
 });
 
-// Функція для отримання вигідних пропозицій (Deals)
-export const getDeals = async () => {
+// Функція для отримання вигідних пропозицій (Deals) з підтримкою фільтрів
+export const getDeals = async (filters = {}) => {
   try {
     const response = await apiClient.get('/deals', {
       params: {
-        // Без параметрів пагінації
+        ...filters, // Додавання фільтрів у параметри запиту
       },
     });
     return response.data;
