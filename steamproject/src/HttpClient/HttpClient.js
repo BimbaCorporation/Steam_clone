@@ -22,6 +22,15 @@ export const getDeals = async () => {
     throw error;
   }
 };
+export const getStores = async () => {
+  try {
+    const response = await apiClient.get('/stores');
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching stores: ", error);
+    throw error;
+  }
+};
 
 export const searchGamesByTitle = async (title) => {
   try {
