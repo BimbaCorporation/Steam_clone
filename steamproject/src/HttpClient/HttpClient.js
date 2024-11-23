@@ -8,25 +8,14 @@ const apiClient = axios.create({
   },
 });
 
-// Функція для отримання всіх ігор
-export const getGames = async (gameIds = []) => {
-  try {
-    // Якщо передано gameIds, формуємо запит
-    const idsParam = gameIds.length ? gameIds.join(',') : '';
-    const response = await apiClient.get('/games', {
-      params: { ids: idsParam, format: 'array' }, // Параметри для запиту
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching games: ", error);
-    throw error;
-  }
-};
-
 // Функція для отримання вигідних пропозицій (Deals)
 export const getDeals = async () => {
   try {
-    const response = await apiClient.get('/deals');
+    const response = await apiClient.get('/deals', {
+      params: {
+        // Без параметрів пагінації
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching deals: ", error);
@@ -34,16 +23,6 @@ export const getDeals = async () => {
   }
 };
 
-// Функція для отримання інформації про магазини
-export const getStores = async () => {
-  try {
-    const response = await apiClient.get('/stores');
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching stores: ", error);
-    throw error;
-  }
-};
 export const searchGamesByTitle = async (title) => {
   try {
     const response = await apiClient.get('/deals', {
@@ -55,4 +34,3 @@ export const searchGamesByTitle = async (title) => {
     throw error;
   }
 };
-
