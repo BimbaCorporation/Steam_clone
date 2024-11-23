@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getDeals } from "../HttpClient/HttpClient";
+import { getDeals } from "../HttpClient/HttpClient"; // Використовуємо нову версію getDeals без пагінації
 import "../styles/Browse.css";
 
 const Browse = () => {
@@ -10,18 +10,16 @@ const Browse = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [filters, setFilters] = useState({
     title: "",
-    onSale: false,
     priceRange: [0, 50],
-    dealRating: null,
   });
 
   useEffect(() => {
     const fetchDeals = async () => {
       try {
-        const data = await getDeals();
-        setDeals(data);
-        setFilteredDeals(data);
-        setLoading(false);
+        const data = await getDeals(); // Отримуємо всі угоди
+        setDeals(data); // Зберігаємо угоди
+        setFilteredDeals(data); // Встановлюємо відфільтровані угоди
+        setLoading(false); // Завершення завантаження
       } catch (err) {
         setError("Не вдалося отримати угоди");
         setLoading(false);
@@ -29,19 +27,16 @@ const Browse = () => {
     };
 
     fetchDeals();
-  }, []);
+  }, []); // Викликається лише один раз при монтуванні компонента
 
   useEffect(() => {
     let filtered = deals;
 
+    // Фільтри
     if (filters.title) {
       filtered = filtered.filter((deal) =>
         deal.title.toLowerCase().includes(filters.title.toLowerCase())
       );
-    }
-
-    if (filters.onSale) {
-      filtered = filtered.filter((deal) => deal.savings > 0);
     }
 
     if (filters.priceRange) {
@@ -51,21 +46,12 @@ const Browse = () => {
       );
     }
 
-    if (filters.dealRating) {
-      filtered = filtered.filter(
-        (deal) => parseFloat(deal.dealRating) >= filters.dealRating
-      );
-    }
-
     setFilteredDeals(filtered);
   }, [filters, deals]);
 
   const handleSort = (key) => {
     let direction = "ascending";
-    if (
-      sortConfig.key === key &&
-      sortConfig.direction === "ascending"
-    ) {
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
       direction = "descending";
     }
 
@@ -98,16 +84,6 @@ const Browse = () => {
           value={filters.title}
           onChange={(e) => setFilters({ ...filters, title: e.target.value })}
         />
-        <label>
-          <input
-            type="checkbox"
-            checked={filters.onSale}
-            onChange={(e) =>
-              setFilters({ ...filters, onSale: e.target.checked })
-            }
-          />
-          Лише зі знижками
-        </label>
         <div>
           <label>Діапазон ціни:</label>
           <input
@@ -121,7 +97,7 @@ const Browse = () => {
               })
             }
           />
-          -
+          - 
           <input
             type="number"
             value={filters.priceRange[1]}
@@ -134,21 +110,6 @@ const Browse = () => {
             }
           />
         </div>
-        <div>
-          <label>Рейтинг угоди:</label>
-          <input
-            type="number"
-            value={filters.dealRating || ""}
-            min="0"
-            max="10"
-            onChange={(e) =>
-              setFilters({
-                ...filters,
-                dealRating: e.target.value ? Number(e.target.value) : null,
-              })
-            }
-          />
-        </div>
       </div>
 
       {/* Таблиця */}
@@ -156,15 +117,31 @@ const Browse = () => {
         <thead>
           <tr>
             <th>Магазин</th>
-            <th>Знижка</th>
-            <th>Ціна</th>
-            <th>Назва гри</th>
-            <th onClick={() => handleSort("dealRating")}>
-              Deal Rating{" "}
-              {sortConfig.key === "dealRating" &&
+            <th onClick={() => handleSort("savings")}>
+              Знижка{" "}
+              {sortConfig.key === "savings" &&
                 (sortConfig.direction === "ascending" ? "▲" : "▼")}
             </th>
-            <th>Дата релізу</th>
+            <th onClick={() => handleSort("salePrice")}>
+              Ціна{" "}
+              {sortConfig.key === "salePrice" &&
+                (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th onClick={() => handleSort("title")}>
+              Назва гри{" "}
+              {sortConfig.key === "title" &&
+                (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th onClick={() => handleSort("steamRating")}>
+              Steam Рейтинг{" "}
+              {sortConfig.key === "steamRating" &&
+                (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
+            <th onClick={() => handleSort("releaseDate")}>
+              Дата релізу{" "}
+              {sortConfig.key === "releaseDate" &&
+                (sortConfig.direction === "ascending" ? "▲" : "▼")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -198,7 +175,11 @@ const Browse = () => {
                   </a>
                 </div>
               </td>
-              <td>{deal.dealRating}</td>
+              <td>
+                {deal.steamRatingText
+                  ? `${deal.steamRatingText} (${deal.steamRatingPercent}%)`
+                  : "N/A"}
+              </td>
               <td>
                 {deal.releaseDate
                   ? new Date(deal.releaseDate * 1000).toLocaleDateString()
