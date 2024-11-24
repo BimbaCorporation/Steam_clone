@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getDeals } from "../HttpClient/HttpClient"; // Використовуємо нову версію getDeals без пагінації
+import { getDeals } from "../HttpClient/HttpClient";
 import "../styles/Browse.css";
 
 const Browse = () => {
@@ -12,14 +12,15 @@ const Browse = () => {
     title: "",
     priceRange: [0, 50],
   });
+  const [viewMode, setViewMode] = useState("table"); // table або cards
 
   useEffect(() => {
     const fetchDeals = async () => {
       try {
-        const data = await getDeals(); // Отримуємо всі угоди
-        setDeals(data); // Зберігаємо угоди
-        setFilteredDeals(data); // Встановлюємо відфільтровані угоди
-        setLoading(false); // Завершення завантаження
+        const data = await getDeals();
+        setDeals(data);
+        setFilteredDeals(data);
+        setLoading(false);
       } catch (err) {
         setError("Не вдалося отримати угоди");
         setLoading(false);
@@ -27,12 +28,11 @@ const Browse = () => {
     };
 
     fetchDeals();
-  }, []); // Викликається лише один раз при монтуванні компонента
+  }, []);
 
   useEffect(() => {
     let filtered = deals;
 
-    // Фільтри
     if (filters.title) {
       filtered = filtered.filter((deal) =>
         deal.title.toLowerCase().includes(filters.title.toLowerCase())
@@ -76,7 +76,21 @@ const Browse = () => {
     <div className="browse-container">
       <h1>Вигідні пропозиції</h1>
 
-      {/* Фільтри */}
+      <div className="view-toggle">
+        <button
+          onClick={() => setViewMode("table")}
+          className={viewMode === "table" ? "active" : ""}
+        >
+          Таблиця
+        </button>
+        <button
+          onClick={() => setViewMode("cards")}
+          className={viewMode === "cards" ? "active" : ""}
+        >
+          Картки
+        </button>
+      </div>
+
       <div className="filters">
         <input
           type="text"
@@ -97,7 +111,7 @@ const Browse = () => {
               })
             }
           />
-          - 
+          -
           <input
             type="number"
             value={filters.priceRange[1]}
@@ -112,83 +126,118 @@ const Browse = () => {
         </div>
       </div>
 
-      {/* Таблиця */}
-      <table className="deals-table">
-        <thead>
-          <tr>
-            <th>Магазин</th>
-            <th onClick={() => handleSort("savings")}>
-              Знижка{" "}
-              {sortConfig.key === "savings" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("salePrice")}>
-              Ціна{" "}
-              {sortConfig.key === "salePrice" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("title")}>
-              Назва гри{" "}
-              {sortConfig.key === "title" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("steamRating")}>
-              Steam Рейтинг{" "}
-              {sortConfig.key === "steamRating" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("releaseDate")}>
-              Дата релізу{" "}
-              {sortConfig.key === "releaseDate" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDeals.map((deal) => (
-            <tr key={deal.dealID}>
-              <td>
-                <img
-                  src={`https://www.cheapshark.com/img/stores/icons/${deal.storeID}.png`}
-                  alt="Лого магазину"
-                  className="store-logo"
-                />
-              </td>
-              <td>{Math.round(deal.savings)}%</td>
-              <td>
-                <span className="price">${deal.salePrice}</span>{" "}
-                <span className="retail-price">${deal.retailPrice}</span>
-              </td>
-              <td>
-                <div className="game-title">
-                  <img
-                    src={deal.thumb}
-                    alt={deal.title}
-                    className="game-thumbnail"
-                  />
-                  <a
-                    href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {deal.title}
-                  </a>
-                </div>
-              </td>
-              <td>
-                {deal.steamRatingText
-                  ? `${deal.steamRatingText} (${deal.steamRatingPercent}%)`
-                  : "N/A"}
-              </td>
-              <td>
-                {deal.releaseDate
-                  ? new Date(deal.releaseDate * 1000).toLocaleDateString()
-                  : "N/A"}
-              </td>
+      {viewMode === "table" ? (
+        <table className="deals-table">
+          <thead>
+            <tr>
+              <th>Магазин</th>
+              <th onClick={() => handleSort("savings")}>
+                Знижка{" "}
+                {sortConfig.key === "savings" &&
+                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
+              </th>
+              <th onClick={() => handleSort("salePrice")}>
+                Ціна{" "}
+                {sortConfig.key === "salePrice" &&
+                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
+              </th>
+              <th onClick={() => handleSort("title")}>
+                Назва гри{" "}
+                {sortConfig.key === "title" &&
+                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
+              </th>
+              <th onClick={() => handleSort("steamRating")}>
+                Steam Рейтинг{" "}
+                {sortConfig.key === "steamRating" &&
+                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
+              </th>
+              <th onClick={() => handleSort("releaseDate")}>
+                Дата релізу{" "}
+                {sortConfig.key === "releaseDate" &&
+                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
+              </th>
             </tr>
+          </thead>
+          <tbody>
+            {filteredDeals.map((deal) => (
+              <tr key={deal.dealID}>
+                <td>
+                  <img
+                    src={`https://www.cheapshark.com/img/stores/icons/${deal.storeID}.png`}
+                    alt="Лого магазину"
+                    className="store-logo"
+                  />
+                </td>
+                <td>{Math.round(deal.savings)}%</td>
+                <td>
+                  <span className="price">${deal.salePrice}</span>{" "}
+                  <span className="retail-price">${deal.retailPrice}</span>
+                </td>
+                <td>
+                  <div className="game-title">
+                    <img
+                      src={deal.thumb}
+                      alt={deal.title}
+                      className="game-thumbnail"
+                    />
+                    <a
+                      href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {deal.title}
+                    </a>
+                  </div>
+                </td>
+                <td>
+                  {deal.steamRatingText
+                    ? `${deal.steamRatingText} (${deal.steamRatingPercent}%)`
+                    : "N/A"}
+                </td>
+                <td>
+                  {deal.releaseDate
+                    ? new Date(deal.releaseDate * 1000).toLocaleDateString()
+                    : "N/A"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="card-grid">
+          {filteredDeals.map((deal) => (
+            <div className="card" key={deal.dealID}>
+              <div className="card-top">
+                <img
+                  src={deal.thumb}
+                  alt={deal.title}
+                  className="card-image"
+                />
+                <h3 className="card-title">{deal.title}</h3>
+              </div>
+              <div className="card-bottom">
+                <p>
+                  Магазин: <span>{deal.storeID}</span>
+                </p>
+                <p>
+                  Знижка: <span>{Math.round(deal.savings)}%</span>
+                </p>
+                <p>
+                  Ціна: <span>${deal.salePrice}</span>
+                </p>
+                <p>
+                  Рейтинг:{" "}
+                  <span>
+                    {deal.steamRatingText
+                      ? `${deal.steamRatingText} (${deal.steamRatingPercent}%)`
+                      : "N/A"}
+                  </span>
+                </p>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 };
