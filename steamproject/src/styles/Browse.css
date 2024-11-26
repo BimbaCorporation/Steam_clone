@@ -117,7 +117,7 @@ a:hover {
   margin-left: 5px;
 }
 
-/* Стилі для карток */
+/* Стилі карток */
 .card {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -129,8 +129,8 @@ a:hover {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 90%; /* Додано, щоб відповідати ширині колонки */
-  height: 70%; /* Фіксована висота для прямокутної форми */
+  min-height: 300px; /* Збільшена мінімальна висота */
+  padding: 15px; /* Додані відступи всередині картки */
 }
 
 .card:hover {
@@ -138,41 +138,36 @@ a:hover {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
-.card-top {
-  background: #fff;
-  padding: 10px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
+/* Зображення в картках */
 .card-image {
-  width: 60%;
-  height: 100px;
-  object-fit: contain;
+  width: 100%; /* Ширина зображення адаптується до ширини картки */
+  height: auto;
+  max-height: 120px; /* Збільшена висота, щоб зображення краще виглядало */
+  object-fit: cover; /* Обрізає зображення для заповнення контейнера, зберігаючи пропорції */
   border-radius: 4px;
 }
 
+/* Заголовок картки */
 .card-title {
-  font-size: 16px;
-  margin: 10px 0 0;
-  color: #000; /* Чорний колір тексту */
+  font-size: 18px;
+  margin: 10px 0 5px;
+  color: #333;
   font-weight: bold;
 }
 
+/* Контейнер змісту картки */
 .card-bottom {
   background: #f1f1f1;
   padding: 10px;
   font-size: 14px;
   text-align: left;
-  color: #000; /* Чорний колір тексту */
+  flex-grow: 1; /* Займає всю доступну висоту */
+  color: #000; /* Текст змісту чорного кольору */
 }
 
 .card-info-item {
   margin: 5px 0;
-  color: #333;
+  color: #555;
 }
 
 .card-info-item span {
@@ -183,9 +178,9 @@ a:hover {
 /* Адаптивна сітка для карток */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Три картки в одному рядку */
-  gap: 5px; /* Відступи між картками */
-  margin-top: 10px;
+  grid-template-columns: repeat(3, 1fr); /* Три картки в ряд */
+  gap: 15px; /* Зменшений вертикальний відступ */
+  margin-top: 20px;
 }
 
 
