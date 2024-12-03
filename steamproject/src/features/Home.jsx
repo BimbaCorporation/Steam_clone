@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getStores } from '../HttpClient/HttpClient'; // Імпортуємо клієнт
+import { getStores } from '../HttpClient/HttpClient';
+import "../styles/Home.css"
 
 const Home = () => {
   const [stores, setStores] = useState([]);
@@ -9,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const data = await getStores(); // Отримуємо магазини
+        const data = await getStores();
         setStores(data);
         setLoading(false);
       } catch (err) {
@@ -21,24 +22,27 @@ const Home = () => {
     fetchStores();
   }, []);
 
-  if (loading) return <div>Завантаження...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div className="loading-container">Завантаження...</div>;
+  if (error) return <div className="error-container">{error}</div>;
 
   return (
-    <div>
-      <h1>Магазини</h1>
-      <ul>
+    <div className="stores-container">
+      <h1 className="stores-title">Магазини</h1>
+      <div className="card-container">
         {stores.map(store => (
-          <li key={store.storeID}>
-            <strong>{store.storeName}</strong> - <a href={store.storeURL}>Перейти</a> <br />
+          <div key={store.storeID} className="store-card">
             <img
-              src={`https://www.cheapshark.com${store.images.banner}`} // Додаємо домен перед шляхом
+              src={`https://www.cheapshark.com${store.images.banner}`}
               alt={store.storeName}
-              width="200"
+              className="store-card-image"
             />
-          </li>
+            <div className="store-card-content">
+              <h2 className="store-card-name">{store.storeName}</h2>
+              <button href={store.storeURL} className="store-card-link">Перейти</button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
