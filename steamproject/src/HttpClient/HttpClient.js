@@ -11,13 +11,10 @@ const apiClient = axios.create({
 // Функція для отримання вигідних пропозицій (Deals)
 export const getDeals = async () => {
   try {
-    const response = await apiClient.get('/deals', {
-      params: {
-        
-      },
-    });
+    const response = await apiClient.get('/deals');
     return response.data;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Error fetching deals: ", error);
     throw error;
   }

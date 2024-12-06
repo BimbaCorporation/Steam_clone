@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from "react";
 import "../styles/About.css";
 
 const gifs = [
@@ -12,7 +12,7 @@ const gifs = [
   { src: "/image/about/about8.gif", alt: "description of picture 8" },
 ];
 
-const About = () => {
+const About = memo(() => {
   const [currentPage, setCurrentPage] = useState(1);
   const imagesPerPage = 1;
 
@@ -57,6 +57,6 @@ const About = () => {
       </div>
     </div>
   );
-};
+});
 
 export default About;

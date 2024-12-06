@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { getDeals } from "../HttpClient/HttpClient";
 import "../styles/Browse.css";
 
-const Browse = () => {
+const Browse = memo(() => {
   const [deals, setDeals] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -249,6 +249,6 @@ const Browse = () => {
       )}
     </div>
   );
-};
+});
 
 export default Browse;
