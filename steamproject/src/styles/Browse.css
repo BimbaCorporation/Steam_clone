@@ -75,7 +75,7 @@ h1 {
 }
 
 .deals-table tr:hover {
-  background-color: #e1f7f4;
+  background-color: #565757;
 }
 
 .store-logo {
@@ -122,7 +122,7 @@ a:hover {
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
-  background: #f9f9f9;
+  background: #2c3e50;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
@@ -151,18 +151,18 @@ a:hover {
 .card-title {
   font-size: 18px;
   margin: 10px 0 5px;
-  color: #333;
+  color: #ffffff;
   font-weight: bold;
 }
 
 /* Контейнер змісту картки */
 .card-bottom {
-  background: #f1f1f1;
+  background: linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(9,17,121,1) 57%, rgba(89,0,255,1) 100%);
   padding: 10px;
   font-size: 14px;
   text-align: left;
   flex-grow: 1; /* Займає всю доступну висоту */
-  color: #000; /* Текст змісту чорного кольору */
+  color: #ffffff; /* Текст змісту чорного кольору */
 }
 
 .card-info-item {
