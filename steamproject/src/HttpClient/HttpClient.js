@@ -13,7 +13,20 @@ export const getDeals = async (filters = {}) => {
   try {
     const response = await apiClient.get('/deals', {
       params: {
-        ...filters, // Додавання фільтрів у параметри запиту
+        storeID: filters.storeID || undefined,
+        upperPrice: filters.upperPrice || undefined,
+        lowerPrice: filters.lowerPrice || undefined,
+        sortBy: filters.sortBy || "DealRating",
+        desc: filters.desc || 0,
+        metacritic: filters.metacritic || undefined,
+        steamRating: filters.steamRating || undefined,
+        title: filters.title || undefined,
+        exact: filters.exact || 0,
+        AAA: filters.AAA || 0,
+        steamworks: filters.steamworks || 0,
+        onSale: filters.onSale || 0,
+        pageSize: filters.pageSize || 60,
+        pageNumber: filters.pageNumber || 0,
       },
     });
     return response.data;
@@ -22,6 +35,7 @@ export const getDeals = async (filters = {}) => {
     throw error;
   }
 };
+
 export const getStores = async () => {
   try {
     const response = await apiClient.get('/stores');

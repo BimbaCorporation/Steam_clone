@@ -4,85 +4,41 @@ import "../styles/Browse.css";
 
 const Browse = () => {
   const [deals, setDeals] = useState([]);
-  const [filteredDeals, setFilteredDeals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [filters, setFilters] = useState({
+    title: "",
+    lowerPrice: 0,
+    upperPrice: 50,
     AAA: 0,
     steamworks: 0,
     onSale: 0,
-    title: "",
-    priceRange: [0, 50],
-    hideDuplicates: false,
     steamRating: 70,
+    sortBy: "DealRating",
+    desc: 0,
+    pageSize: 60,
+    pageNumber: 0,
   });
 
+  // Завантаження даних
+  const fetchDeals = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await getDeals(filters);
+      setDeals(data);
+    } catch (error) {
+      setError("Не вдалося завантажити пропозиції.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Завантаження даних при зміні фільтрів
   useEffect(() => {
-    const fetchDeals = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        // Формуємо фільтри для API
-        const apiFilters = {
-          AAA: filters.AAA,
-          steamworks: filters.steamworks,
-          onSale: filters.onSale,
-          steamRating: filters.steamRating,
-          upperPrice: filters.priceRange[1],
-          lowerPrice: filters.priceRange[0],
-        };
-
-        const data = await getDeals(apiFilters);
-        setDeals(data);
-        setLoading(false);
-      } catch (error) {
-        setError("Не вдалося завантажити пропозиції.");
-        setLoading(false);
-      }
-    };
-
     fetchDeals();
   }, [filters]);
-
-  useEffect(() => {
-    // Локальне фільтрування
-    let filtered = [...deals];
-
-    if (filters.title) {
-      filtered = filtered.filter((deal) =>
-        deal.title.toLowerCase().includes(filters.title.toLowerCase())
-      );
-    }
-
-    if (filters.hideDuplicates) {
-      const uniqueTitles = new Set();
-      filtered = filtered.filter((deal) => {
-        if (uniqueTitles.has(deal.title)) return false;
-        uniqueTitles.add(deal.title);
-        return true;
-      });
-    }
-
-    setFilteredDeals(filtered);
-  }, [filters, deals]);
-
-  const handleSort = (key) => {
-    const direction =
-      sortConfig.key === key && sortConfig.direction === "ascending"
-        ? "descending"
-        : "ascending";
-
-    const sorted = [...filteredDeals].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-      return 0;
-    });
-
-    setSortConfig({ key, direction });
-    setFilteredDeals(sorted);
-  };
 
   if (loading) return <div className="loading">Завантаження...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -103,25 +59,19 @@ const Browse = () => {
           <label>Діапазон ціни:</label>
           <input
             type="number"
-            value={filters.priceRange[0]}
+            value={filters.lowerPrice}
             min="0"
             onChange={(e) =>
-              setFilters({
-                ...filters,
-                priceRange: [Number(e.target.value), filters.priceRange[1]],
-              })
+              setFilters({ ...filters, lowerPrice: Number(e.target.value) })
             }
           />
-          - 
+          -
           <input
             type="number"
-            value={filters.priceRange[1]}
+            value={filters.upperPrice}
             max="50"
             onChange={(e) =>
-              setFilters({
-                ...filters,
-                priceRange: [filters.priceRange[0], Number(e.target.value)],
-              })
+              setFilters({ ...filters, upperPrice: Number(e.target.value) })
             }
           />
         </div>
@@ -129,7 +79,7 @@ const Browse = () => {
           <label>
             <input
               type="checkbox"
-              checked={filters.AAA}
+              checked={!!filters.AAA}
               onChange={(e) => setFilters({ ...filters, AAA: e.target.checked ? 1 : 0 })}
             />
             AAA ігри
@@ -139,7 +89,7 @@ const Browse = () => {
           <label>
             <input
               type="checkbox"
-              checked={filters.steamworks}
+              checked={!!filters.steamworks}
               onChange={(e) =>
                 setFilters({ ...filters, steamworks: e.target.checked ? 1 : 0 })
               }
@@ -151,24 +101,12 @@ const Browse = () => {
           <label>
             <input
               type="checkbox"
-              checked={filters.onSale}
+              checked={!!filters.onSale}
               onChange={(e) =>
                 setFilters({ ...filters, onSale: e.target.checked ? 1 : 0 })
               }
             />
             Знижка
-          </label>
-        </div>
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={filters.hideDuplicates}
-              onChange={(e) =>
-                setFilters({ ...filters, hideDuplicates: e.target.checked })
-              }
-            />
-            Сховати дуплікати
           </label>
         </div>
         <div>
@@ -187,6 +125,19 @@ const Browse = () => {
           />
           <span>{filters.steamRating}%+</span>
         </div>
+        <div>
+          <label>Сортування:</label>
+          <select
+            value={filters.sortBy}
+            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
+          >
+            <option value="DealRating">Рейтинг пропозицій</option>
+            <option value="Price">Ціна</option>
+            <option value="Savings">Знижка</option>
+            <option value="Metacritic">Metacritic</option>
+            <option value="Reviews">Відгуки</option>
+          </select>
+        </div>
       </div>
 
       {/* Таблиця */}
@@ -194,30 +145,14 @@ const Browse = () => {
         <thead>
           <tr>
             <th>Магазин</th>
-            <th onClick={() => handleSort("savings")}>
-              Знижка{" "}
-              {sortConfig.key === "savings" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("salePrice")}>
-              Ціна{" "}
-              {sortConfig.key === "salePrice" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("title")}>
-              Назва гри{" "}
-              {sortConfig.key === "title" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
-            <th onClick={() => handleSort("steamRating")}>
-              Steam Рейтинг{" "}
-              {sortConfig.key === "steamRating" &&
-                (sortConfig.direction === "ascending" ? "▲" : "▼")}
-            </th>
+            <th>Знижка</th>
+            <th>Ціна</th>
+            <th>Назва гри</th>
+            <th>Steam Рейтинг</th>
           </tr>
         </thead>
         <tbody>
-          {filteredDeals.map((deal) => (
+          {deals.map((deal) => (
             <tr key={deal.dealID}>
               <td>
                 <img
@@ -227,15 +162,9 @@ const Browse = () => {
                 />
               </td>
               <td>{Math.round(deal.savings)}%</td>
-              <td>
-                <span className="price">${deal.salePrice}</span>
-              </td>
+              <td>${deal.salePrice}</td>
               <td>{deal.title}</td>
-              <td>
-                {deal.steamRatingPercent
-                  ? `${deal.steamRatingPercent}%`
-                  : "N/A"}
-              </td>
+              <td>{deal.steamRatingPercent || "N/A"}%</td>
             </tr>
           ))}
         </tbody>
