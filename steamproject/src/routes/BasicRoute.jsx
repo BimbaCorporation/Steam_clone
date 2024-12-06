@@ -7,6 +7,7 @@ import Home from '../features/Home';
 import Browse from '../features/Browse';
 import Search from '../features/Search';
 import About from '../features/About';
+import NotFound from '../features/NotFound';
 
 
 const BasicRoute = () => {
@@ -18,6 +19,7 @@ const BasicRoute = () => {
           <Route path="/browse" element={<Browse />} />
           <Route path="/search" element={<Search />} />
           <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     );

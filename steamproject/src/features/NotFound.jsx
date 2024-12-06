@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 const NotFound = () => {
     return (
         <div>
-          <h1>Помилка</h1>
+          <img width={700} src="/image/about/home.gif" alt="" />
           <nav>
             <Link to="/">
               <button>Назад</button>
