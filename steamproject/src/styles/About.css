@@ -4,7 +4,17 @@
     box-sizing: border-box;
 }
 
-
+body {
+    background-color: var(--background);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
 
 h1 {
     text-align: center;
@@ -91,3 +101,5 @@ p {
     transform: translateY(0); /* Без руху */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Менш помітна тінь */
 }
+
+
