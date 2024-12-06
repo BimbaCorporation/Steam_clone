@@ -1,0 +1,72 @@
+.stores-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: transparent;
+  }
+  
+  .stores-title {
+    text-align: center;
+    color: #868080;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+  }
+  
+  .store-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .store-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .store-card-content {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .store-card-image {
+    object-fit: cover;
+  }
+  
+  .store-card-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #b4afaf;
+  }
+  
+  .store-card-link {
+    display: inline-block;
+    background-color: #34495e;
+    color: white;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .store-card-link:hover {
+    background-color: #45a049;
+  }
+  
+  .loading-container, .error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #666;
+  }
