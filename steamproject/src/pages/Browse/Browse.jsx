@@ -3,12 +3,13 @@ import { getDeals } from "../../HttpClient/cheapshark";
 import BrowseHeader from "./BrowseHeader";
 import BrowseTable from "./BrowseTable";
 import BrowseCards from "./BrowseCards";
+import useIsLoader from "../../hooks/useIsLoader"; // Підключаємо хук
 import "../../styles/Browse.css";
 
 const Browse = () => {
+  const { isLoading, startLoading, stopLoading } = useIsLoader(); // Використовуємо хук
   const [deals, setDeals] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     title: "",
@@ -18,14 +19,17 @@ const Browse = () => {
 
   useEffect(() => {
     const fetchDeals = async () => {
+      startLoading(); // Починаємо завантаження
+      setError(null);
+
       try {
         const data = await getDeals();
         setDeals(data);
         setFilteredDeals(data);
-        setLoading(false);
       } catch (err) {
         setError("Не вдалося отримати угоди");
-        setLoading(false);
+      } finally {
+        stopLoading(); // Завершуємо завантаження
       }
     };
 
@@ -51,7 +55,7 @@ const Browse = () => {
     setFilteredDeals(filtered);
   }, [filters, deals]);
 
-  if (loading) return <div>Завантаження...</div>;
+  if (isLoading) return <div>Завантаження...</div>;
   if (error) return <div>{error}</div>;
 
   return (
