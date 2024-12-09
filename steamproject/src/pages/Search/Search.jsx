@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { searchGamesByTitle } from '../HttpClient/HttpClient';
+import { searchGamesByTitle } from "../../HttpClient/cheapshark";
 
 const Search = () => {
   const [query, setQuery] = useState('');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../styles/About.css";
+import "../../styles/About.css";
 
 const gifs = [
   { src: "/image/about/about1.gif", alt: "description of picture 1" },
