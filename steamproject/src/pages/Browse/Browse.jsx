@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getDeals } from "../../HttpClient/cheapshark";
-import BrowseHeader from "./BrowseHeader";
-import BrowseTable from "./BrowseTable";
-import BrowseCards from "./BrowseCards";
+import BrowseHeader from "./features/BrowseHeader";
+import BrowseTable from "./features/BrowseTable";
+import BrowseCards from "./features/BrowseCards";
 import useIsLoader from "../../hooks/useIsLoader"; // Підключаємо хук
 import "../../styles/Browse.css";
 
