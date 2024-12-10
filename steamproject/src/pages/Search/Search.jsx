@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { searchGamesByTitle } from "../../HttpClient/cheapshark";
+import React, { useCallback, useState } from 'react';
+import { searchGamesByTitle } from '../../HttpClient/cheapshark';
+import '../../styles/Search.css';
+import ResultsTable from './features/ResultsTable';
+import SearchInputWithButton from './features/SearchInputWithButton';
 
 const Search = () => {
-  const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSearch = async () => {
+  // Мемоізовані функції для обробки пошуку
+  const handleSearch = useCallback(async (query) => {
     if (!query.trim()) return;
 
     setLoading(true);
@@ -17,34 +20,22 @@ const Search = () => {
       const games = await searchGamesByTitle(query);
       setResults(games);
     } catch (err) {
-      setError("Не вдалося знайти ігри");
+      setError('Не вдалося знайти ігри');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  console.log('Search rendered');
 
   return (
     <div>
       <h1>Пошук ігор</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Введіть назву гри"
-      />
-      <button onClick={handleSearch}>Шукати</button>
-
+      <SearchInputWithButton onSearch={handleSearch} />
+      
       {loading && <div>Завантаження...</div>}
       {error && <div>{error}</div>}
-
-      <ul>
-        {results.map((game) => (
-          <li key={game.dealID}>
-            <strong>{game.title}</strong> - ${game.price} (знижка: {Math.round(game.savings)}%) <br />
-            <img src={game.thumb} alt={game.title} />
-          </li>
-        ))}
-      </ul>
+      {results.length > 0 && <ResultsTable results={results} />}
     </div>
   );
 };

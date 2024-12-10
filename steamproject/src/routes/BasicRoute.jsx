@@ -1,29 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React from 'react'
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes
+} from 'react-router-dom'
 
 // Імпорт компонентів
-import Menu from '../pages/Menu/Menu';
-import Home from '../pages/Home/Home';
-import Browse from '../pages/Browse/Browse';
-import Search from '../pages/Search/Search';
-import About from '../pages/About/About';
-import NotFound from '../pages/NotFound/NotFound';
-
+import Layout from '../layout/Layout'
+import About from '../pages/About/About'
+import Browse from '../pages/Browse/Browse'
+import Home from '../pages/Home/Home'
+import NotFound from '../pages/NotFound/NotFound'
+import Search from '../pages/Search/Search'
 
 const BasicRoute = () => {
-    return (
-      <Router>
-        <Menu />
-        <Routes>
-          <Route path="/" element={<Home />} />
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/search" element={<Search />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    );
-  };
-  
+        </Route>
+      </Routes>
+    </Router>
+  )
+}
 
-export default BasicRoute;
+export default BasicRoute
