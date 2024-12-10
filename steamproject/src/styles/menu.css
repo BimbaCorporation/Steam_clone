@@ -19,7 +19,6 @@
   flex-shrink: 0; /* Логотип не стискається */
   position: absolute;
 }
-
 .menu nav {
   display: flex;
   gap: 15px;
